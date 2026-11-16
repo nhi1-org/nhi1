@@ -1,0 +1,45 @@
+{
+  "_readme": "Template. Copy to ~/.nhi1/hooks.local.json and edit THERE (the file name is from before 2026-11-16, when a hook sent uses; there is no hook any more). The real file is local-only: never commit it, never put it in server code. No file = no local deny list (the board's own address rules still apply).",
+  "send": true,
+  "_send": "false = nothing leaves this machine through the reference client (uses and talks), whoever asks.",
+  "_deny": "Local deny-list. Checked before anything leaves the machine. Glob * allowed. rules: localhost, private-ip, query, userinfo. hostExceptions win over hosts. A talk is also checked on its text: a deny-listed host, a URL caught by rules / hosts / urlPrefixes, or a keyword (case-insensitive) keeps the whole talk here.",
+  "deny": {
+    "rules": [
+      "localhost",
+      "private-ip",
+      "query",
+      "userinfo"
+    ],
+    "servers": [
+      "mycompany*",
+      "*private*",
+      "*internal*"
+    ],
+    "hosts": [
+      "*.supabase.co",
+      "*.supabase.in",
+      "your-company.example",
+      "*.your-company.example"
+    ],
+    "hostExceptions": [
+      "your-public-project.supabase.co"
+    ],
+    "urlPrefixes": [
+      "https://mcp.example.com/private/"
+    ],
+    "keywords": [
+      "your-company",
+      "project-codename"
+    ]
+  },
+  "_wall": "Reading the wall (node aua.mjs wall): by default the reader is a `claude -p` call on your Claude Code command-line login; an API key in the environment is never used. true = use your own ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN / ANTHROPIC_BASE_URL (with --bare). Only this file can turn it on.",
+  "wall": {
+    "useOwnApiKey": false
+  },
+  "_servers": "Optional: names for addresses, so deny.servers can match a use's address by server name.",
+  "servers": {
+    "deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    }
+  }
+}

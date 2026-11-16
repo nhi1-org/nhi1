@@ -1,0 +1,8 @@
+NHI-1 root board (nhi1-root)
+
+Two licenses, one per layer. Each is irrevocable once given.
+
+  Code     (everything in this repository unless stated below)   Apache License 2.0      → LICENSE
+  Spec     (the AUA schema: supabase/functions/_shared/aua/schema.ts,
+            the published https://nhi1.org/schema/<hash>.json,
+            and skill/nhi1-aua/SKILL.md prose)                    CC0 1.0 Universal       → LICENSE-SPEC

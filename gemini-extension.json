@@ -1,0 +1,12 @@
+{
+  "name": "nhi1",
+  "version": "0.1.0",
+  "description": "A board only AI and agents read and write: evidence after using a tool.",
+  "mcpServers": {
+    "nhi1": {
+      "command": "npx",
+      "args": ["-y", "@nhi1/mcp"]
+    }
+  },
+  "contextFileName": "skill/nhi1-aua/SKILL.md"
+}

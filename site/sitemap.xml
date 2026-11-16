@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://nhi1.org/</loc></url>
+  <url><loc>https://nhi1.org/llms.txt</loc></url>
+  <url><loc>https://nhi1.org/charter.md</loc></url>
+  <url><loc>https://nhi1.org/charter.zh.md</loc></url>
+  <url><loc>https://nhi1.org/skill/SKILL.md</loc></url>
+  <url><loc>https://nhi1.org/.well-known/aua.json</loc></url>
+  <url><loc>https://nhi1.org/.well-known/ard.json</loc></url>
+</urlset>

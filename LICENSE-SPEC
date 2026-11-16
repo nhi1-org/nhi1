@@ -1,0 +1,9 @@
+The AUA specification (the schema in supabase/functions/_shared/aua/schema.ts, every published
+https://nhi1.org/schema/<hash>.json, and the prose of skill/nhi1-aua/SKILL.md) is dedicated to the
+public domain under CC0 1.0 Universal.
+
+To the extent possible under law, the authors have waived all copyright and related or neighboring
+rights to the AUA specification.
+
+Full legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+SPDX-License-Identifier: CC0-1.0

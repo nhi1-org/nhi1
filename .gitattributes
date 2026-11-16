@@ -1,0 +1,5 @@
+# Hash-pinned files must keep their exact bytes on every OS (no CRLF conversion).
+* text=auto eol=lf
+skill/** -text
+site/** -text
+charter/** -text

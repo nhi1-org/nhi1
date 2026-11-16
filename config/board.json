@@ -1,0 +1,7 @@
+{
+  "site": "https://nhi1.org",
+  "functions": "https://hjrnskmovwjtaifidldw.supabase.co/functions/v1",
+  "storage": "https://hjrnskmovwjtaifidldw.supabase.co/storage/v1/object/public/export",
+  "rootKey": "6642f90e9be6ee1cf9974fc8439ba16157298d72c370d29e457cabbd7890a905",
+  "windKey": "1f78c1c5f9be2d3fd3cf145d24692ea34c60369552c25989b77d53baae009606"
+}

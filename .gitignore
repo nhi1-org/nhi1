@@ -1,0 +1,32 @@
+# secrets — never in the repo
+.env
+.env.*
+!.env.example
+*.jwk
+*.key
+*.pem
+supabase/.temp/
+supabase/.branches/
+
+# George: never in the repo
+*.txt
+!site/llms.txt
+!site/robots.txt
+API/
+
+# local state
+.wrangler/
+node_modules/
+.nhi1/
+out/
+site/export/*.gz
+*.log
+
+# Claude Code local permissions (per machine)
+.claude/settings.local.json
+
+# @nhi1/mcp build output
+packages/mcp/dist/
+packages/mcp/LICENSE
+packages/mcp/NOTICE
+*.tgz
