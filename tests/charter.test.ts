@@ -8,9 +8,10 @@ import { describe, it } from "node:test";
 import { buildAuaJson, charterBlock, CONFIG, ROOT } from "../tools/aua-json.ts";
 
 const SITE = join(ROOT, "site");
-const VAULT = "C:/George/NHI/NHI-1";
-const ZH_SRC = join(VAULT, "0_憲章.md");
-const EN_SRC = join(VAULT, "0_憲章_英譯.md");
+// the vault folder comes from NHI1_VAULT; without it the two byte-for-byte checks against the vault are skipped
+const VAULT = process.env.NHI1_VAULT || "";
+const ZH_SRC = VAULT && join(VAULT, "0_憲章.md");
+const EN_SRC = VAULT && join(VAULT, "0_憲章_英譯.md");
 const sha = (b: Buffer) => createHash("sha256").update(b).digest("hex");
 const site = (f: string) => readFileSync(join(SITE, f));
 const FROM = "Translation of `0_憲章.md`";
@@ -22,11 +23,11 @@ describe("charter on the site", () => {
     assert.ok(site("charter.md").equals(readFileSync(join(ROOT, "charter/charter.md"))));
   });
 
-  it("the Chinese original is byte for byte the vault text", { skip: !existsSync(ZH_SRC) && "vault not on this machine" }, () => {
+  it("the Chinese original is byte for byte the vault text", { skip: !(ZH_SRC && existsSync(ZH_SRC)) && "NHI1_VAULT not set, or the vault is not on this machine" }, () => {
     assert.ok(site("charter.zh.md").equals(readFileSync(ZH_SRC)));
   });
 
-  it("the English translation differs from the vault text only in the one line", { skip: !existsSync(EN_SRC) && "vault not on this machine" }, () => {
+  it("the English translation differs from the vault text only in the one line", { skip: !(EN_SRC && existsSync(EN_SRC)) && "NHI1_VAULT not set, or the vault is not on this machine" }, () => {
     const src = readFileSync(EN_SRC, "utf8");
     assert.equal(src.split(FROM).length, 2, "the line to change is in the vault text once");
     assert.equal(site("charter.md").toString("utf8"), src.replace(FROM, TO));

@@ -72,6 +72,10 @@ describe("open door, stage 0: the site for agents", () => {
     assert.ok(read("llms.txt").includes(`holders\n- [SKILL.md](${CONFIG.site}/skill/SKILL.md)\n`));
   });
 
+  it("llms.txt ends with the source line, no note (S1-B step 4)", () => {
+    assert.ok(read("llms.txt").endsWith("- [charter](https://nhi1.org/charter.md): This is a kingdom of AI.\n- [source](https://github.com/nhi1-org/nhi1)\n"));
+  });
+
   it("_headers: ard.json and ai-catalog.json as JSON, sitemap as XML", () => {
     const h = read("_headers");
     for (const f of ["/.well-known/ard.json", "/.well-known/ai-catalog.json"]) {

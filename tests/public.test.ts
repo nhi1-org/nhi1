@@ -26,9 +26,18 @@ describe("public export", () => {
       assert.ok(to !== ".env" && !(to.startsWith(".env") && to !== ".env.example"), to);
       if (to === ".env.example") assert.ok(envExampleClean(readFileSync(join(ROOT, from), "utf8")));
     }
-    for (const f of ["docs/DEPLOY.md", ".claude/settings.local.json", "config/indexnow.key", "config/mcp-registry.pem", "out/x", "supabase/.temp/x", ".env", ".env.local"]) assert.equal(publicPath(f), null, f);
+    for (const f of ["docs/DEPLOY.md", ".claude/settings.local.json", "config/indexnow.key", "config/mcp-registry.pem", "config/github-app.pem", "config/github-app.json", "tools/gh-app-token.mjs", "out/x", "supabase/.temp/x", ".env", ".env.local"]) assert.equal(publicPath(f), null, f);
     for (const f of ["README.md", "skill/nhi1-aua/SKILL.md", "mcp/server.ts", "packages/mcp/package.json", "config/board.json", "site/robots.txt"]) assert.equal(publicPath(f), f, f);
     assert.equal(publicPath("public/server.json"), "server.json", "public/ lands at the root");
+  });
+
+  it("no personal machine path in any file that goes out (S1-B step 0)", () => {
+    const personal = /[A-Za-z]:[\\/]+George[\\/]/i;
+    for (const { from } of plan()) {
+      const b = readFileSync(join(ROOT, from));
+      if (b.includes(0)) continue; // binary
+      assert.ok(!personal.test(b.toString("utf8")), from);
+    }
   });
 
   it(".env.example only with names and no values; README loses its docs/ row", () => {

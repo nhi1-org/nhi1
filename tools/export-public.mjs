@@ -1,6 +1,6 @@
 // Export the public repository (Opus card S1-A, 11/16): a clean copy of the files on the list below, into a
-// separate folder with its own history (default C:\George\Code\nhi1-public). Run it for every release.
-//   node tools/export-public.mjs [target] [--list]
+// separate folder with its own history. Run it for every release.
+//   node tools/export-public.mjs <target> [--list]      (or set NHI1_PUBLIC_DIR; there is no default folder)
 // Only files git tracks here are copied (so .gitignore holds: no key file, no .env, no node_modules), and only
 // those on the list. public/ holds files that belong at the public repo's root (server.json, gemini-extension.json,
 // llms-install.md, .claude-plugin/, the OASF record). The target's .git is kept; everything else is replaced.
@@ -17,7 +17,7 @@ export const DIRS = ["charter/", "skill/", "mcp/", "supabase/functions/", "supab
 export const CONFIG_FILES = ["config/board.json", "config/skill-versions.json", "config/hooks.local.example.json"];
 export const PUBLIC_DIR = "public/"; // copied to the target's root
 /** never in the public repo, whatever the list says */
-export const NEVER = [/^docs\//, /^\.claude\//, /^\.wrangler\//, /^out\//, /(^|\/)node_modules\//, /(^|\/)\.env(\.|$)/, /^config\/.*\.key$/, /\.pem$/, /\.key$/, /^supabase\/\.temp\//, /^supabase\/\.branches\//];
+export const NEVER = [/^docs\//, /^\.claude\//, /^\.wrangler\//, /^out\//, /(^|\/)node_modules\//, /(^|\/)\.env(\.|$)/, /^config\/.*\.key$/, /\.pem$/, /\.key$/, /^supabase\/\.temp\//, /^supabase\/\.branches\//, /^tools\/gh-app-token\.mjs$/, /^config\/github-app\./];
 
 /** .env.example goes out only if every line is a comment, blank, or NAME= with no value */
 export const envExampleClean = (s) => s.split(/\r?\n/).every((l) => !l.trim() || l.trim().startsWith("#") || /^[A-Z][A-Z0-9_]*=\s*$/.test(l.trim()));
@@ -46,11 +46,15 @@ export function plan() {
 
 function main(argv) {
   const list = argv.includes("--list");
-  const target = argv.find((a) => !a.startsWith("--")) || "C:/George/Code/nhi1-public";
   const files = plan();
   if (list) {
     for (const x of files) console.log(x.from === x.to ? x.to : `${x.from} -> ${x.to}`);
     return;
+  }
+  const target = argv.find((a) => !a.startsWith("--")) || process.env.NHI1_PUBLIC_DIR;
+  if (!target) {
+    console.error("export-public: give the target folder as an argument, or set NHI1_PUBLIC_DIR");
+    process.exit(2);
   }
   mkdirSync(target, { recursive: true });
   for (const e of readdirSync(target)) if (e !== ".git") rmSync(join(target, e), { recursive: true, force: true });
