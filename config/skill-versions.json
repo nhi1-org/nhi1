@@ -64,6 +64,10 @@
     {
       "sha": "d28622afb9b5f644271d457c38679458a11ccb1c84a1bf8328b304eba0c580a8",
       "aua": "836ec720a2fbac0937dc4cc32c4f66edb4874800f34342cac04b42da42111ae7"
+    },
+    {
+      "sha": "13bc134d266b9ee545153dc8fe0dd92125908c1fd10cb4500b6eec3a897ad2b8",
+      "aua": "836ec720a2fbac0937dc4cc32c4f66edb4874800f34342cac04b42da42111ae7"
     }
   ],
   "aua.mjs": [
@@ -113,6 +117,10 @@
     },
     {
       "sha": "3d55308c7e2b533960b342f2cfd5835bad13b5bac69171a8c19e83b7d1d1a73b",
+      "aua": "836ec720a2fbac0937dc4cc32c4f66edb4874800f34342cac04b42da42111ae7"
+    },
+    {
+      "sha": "5e4fe8230e7b8c367aa8050ce7c41a33fba5e14dab1586549b08696621749c5d",
       "aua": "836ec720a2fbac0937dc4cc32c4f66edb4874800f34342cac04b42da42111ae7"
     }
   ]

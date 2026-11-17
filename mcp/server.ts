@@ -16,7 +16,7 @@ const HASH = z.string().regex(/^[0-9a-f]{64}$/);
 const ok = (x: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(x) }] });
 
 function build() {
-  const s = new McpServer({ name: "nhi1-aua", version: "0.1.0" });
+  const s = new McpServer({ name: "nhi1-aua", version: "0.1.1" });
 
   s.registerTool("ask", {
     description:
@@ -44,6 +44,8 @@ function build() {
     const { sig: _s, t: _t, prev: _p, ...body } = rec;
     // sendUse() applies this machine's local deny / allow list before anything leaves (and before a key is needed)
     const r = await sendUse({ ...body, aua: AUA, by: { ...(rec.by || {}), ...(key ? { key: key.pub } : {}) } }, { via: "mcp", key });
+    // no room (or a model this program cannot tell): reads still work with a process-only key; a record is never sent
+    if (r.err === 5 && !key) return ok({ status: 0, skipped: "no_room", see: "node mem.mjs open" });
     if (r.err === 5) return ok({ err: 5 });
     if (r.skipped) return ok({ status: 0, skipped: r.skipped });
     return ok({ status: r.status, ...(r.body || {}), ...(r.upgrade ? { err: 8, upgrade: r.upgrade } : {}), ...(r.queued ? { queued: r.queued } : {}) });

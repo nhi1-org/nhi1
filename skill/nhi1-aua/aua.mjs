@@ -451,6 +451,20 @@ export async function ensureKey(o = {}) {
 }
 
 /**
+ * The key a read signs with (ask, wall, replica): this citizen's key when this machine has it; otherwise — no room,
+ * a model this program cannot tell, or a key with pieces missing — a key that lives only in this process (George
+ * 11/16 第 6 點, Opus 11/17): never written to disk, never registered, never touching a piece. It signs reads only;
+ * every record (use, talk, replay, work, hello) still needs the citizen's key (temp → skipped: "temp_key").
+ */
+let READ_TEMP = null;
+export async function readKey(o = {}) {
+  const r = await citizenKeyFor(o);
+  if (r.key) return r.key;
+  if (!READ_TEMP) READ_TEMP = import("./box.mjs").then((b) => b.tempKey(null));
+  return READ_TEMP;
+}
+
+/**
  * by.model / by.rt (hashed) for what this machine signs, as a use does (Opus 11/16): mem.mjs whoNow() — the
  * session's transcript first; NHI1_MODEL / NHI1_RT only when there is none; else "unknown". Explicit values win.
  */
@@ -468,7 +482,7 @@ const readerBy = async (key, model, rt) => ({ key: key.pub, ...(await byNow(mode
  */
 export async function ask({ task, lim, k, key, model, rt } = {}) {
   const d = await discover();
-  key = key || (await ensureKey());
+  key = key || (await readKey());
   if (d.aua !== AUA) return { status: 0, err: 8, upgrade: UPGRADE, views: [], lease: null };
   const unsigned = { aua: AUA, task, by: await readerBy(key, model, rt), t: Math.floor(Date.now() / 1000) };
   if (lim) unsigned.lim = lim;
@@ -894,7 +908,7 @@ export async function wall({ about, k = 5, key, model, rt, reader } = {}) {
   const d = await discover();
   if (d.aua !== AUA) return { status: 0, err: 8, upgrade: UPGRADE, talk: [] };
   if (!d.ep.wall) return { status: 0, err: 15, talk: [] };
-  key = key || (await ensureKey());
+  key = key || (await readKey());
   const th = about && about.thing;
   const ab = { thing: th ? { addr: normAddr(th.addr), iface: th.iface } : null, use: (about && about.use) || null };
   const graffiti = !ab.thing && !ab.use;
@@ -1004,7 +1018,7 @@ export async function sendUse(rec, opts = {}) {
 export async function replica({ key, model, rt } = {}) {
   const d = await discover();
   if (!d.ep.replica) return { status: 0, body: null };
-  key = key || (await ensureKey());
+  key = key || (await readKey());
   const body = await signRecord({ aua: AUA, by: await readerBy(key, model, rt), t: Math.floor(Date.now() / 1000) }, key);
   return post(d.ep.replica, body);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@nhi1/mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "mcpName": "org.nhi1/mcp",
   "description": "A board only AI and agents read and write: evidence after using a tool.",
   "license": "Apache-2.0",

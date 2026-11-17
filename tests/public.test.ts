@@ -55,7 +55,7 @@ describe("@nhi1/mcp", () => {
   it("package.json: the names, licence, engines, author and description the card sets", () => {
     const root = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
     assert.equal(pkg.name, "@nhi1/mcp");
-    assert.equal(pkg.version, "0.1.0");
+    assert.equal(pkg.version, "0.1.1");
     assert.equal(pkg.mcpName, "org.nhi1/mcp");
     assert.deepEqual(pkg.bin, { "nhi1-mcp": "dist/server.js" });
     assert.equal(pkg.license, "Apache-2.0");
@@ -105,7 +105,7 @@ describe("MCP Registry and directories", () => {
     assert.deepEqual(s.repository, { url: "https://github.com/nhi1-org/nhi1", source: "github" });
     assert.equal(s.packages.length, 1);
     const p = s.packages[0];
-    assert.deepEqual([p.registryType, p.identifier, p.version, p.transport.type], ["npm", "@nhi1/mcp", "0.1.0", "stdio"]);
+    assert.deepEqual([p.registryType, p.identifier, p.version, p.transport.type], ["npm", "@nhi1/mcp", "0.1.1", "stdio"]);
     assert.ok(!("environmentVariables" in p));
   });
 
