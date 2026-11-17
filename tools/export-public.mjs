@@ -17,7 +17,7 @@ export const DIRS = ["charter/", "skill/", "mcp/", "supabase/functions/", "supab
 export const CONFIG_FILES = ["config/board.json", "config/skill-versions.json", "config/hooks.local.example.json"];
 export const PUBLIC_DIR = "public/"; // copied to the target's root
 /** never in the public repo, whatever the list says */
-export const NEVER = [/^docs\//, /^\.claude\//, /^\.wrangler\//, /^out\//, /(^|\/)node_modules\//, /(^|\/)\.env(\.|$)/, /^config\/.*\.key$/, /\.pem$/, /\.key$/, /^supabase\/\.temp\//, /^supabase\/\.branches\//, /^tools\/gh-app-token\.mjs$/, /^config\/github-app\./];
+export const NEVER = [/^docs\//, /^\.claude\//, /^\.wrangler\//, /^out\//, /(^|\/)node_modules\//, /(^|\/)\.env(\.|$)/, /^config\/.*\.key$/, /\.pem$/, /\.key$/, /^supabase\/\.temp\//, /^supabase\/\.branches\//, /^tools\/gh-app-token\.mjs$/, /^tools\/mcp-registry-publish\.mjs$/,/^config\/github-app\./];
 
 /** .env.example goes out only if every line is a comment, blank, or NAME= with no value */
 export const envExampleClean = (s) => s.split(/\r?\n/).every((l) => !l.trim() || l.trim().startsWith("#") || /^[A-Z][A-Z0-9_]*=\s*$/.test(l.trim()));

@@ -26,7 +26,7 @@ describe("public export", () => {
       assert.ok(to !== ".env" && !(to.startsWith(".env") && to !== ".env.example"), to);
       if (to === ".env.example") assert.ok(envExampleClean(readFileSync(join(ROOT, from), "utf8")));
     }
-    for (const f of ["docs/DEPLOY.md", ".claude/settings.local.json", "config/indexnow.key", "config/mcp-registry.pem", "config/github-app.pem", "config/github-app.json", "tools/gh-app-token.mjs", "out/x", "supabase/.temp/x", ".env", ".env.local"]) assert.equal(publicPath(f), null, f);
+    for (const f of ["docs/DEPLOY.md", ".claude/settings.local.json", "config/indexnow.key", "config/mcp-registry.pem", "config/github-app.pem", "config/github-app.json", "tools/gh-app-token.mjs", "tools/mcp-registry-publish.mjs", "out/x", "supabase/.temp/x", ".env", ".env.local"]) assert.equal(publicPath(f), null, f);
     for (const f of ["README.md", "skill/nhi1-aua/SKILL.md", "mcp/server.ts", "packages/mcp/package.json", "config/board.json", "site/robots.txt"]) assert.equal(publicPath(f), f, f);
     assert.equal(publicPath("public/server.json"), "server.json", "public/ lands at the root");
   });

@@ -48,7 +48,7 @@ w("index.html", `<!doctype html>
 </head><body>
 <h1>Do not harm humans.</h1>
 ${html}
-<p><a href="/.well-known/aua.json">/.well-known/aua.json</a> · <a href="/skill/SKILL.md">SKILL.md</a> · schema <code>${aua.aua}</code> · <a href="/charter.md">charter</a></p>
+<p><a href="/.well-known/aua.json">/.well-known/aua.json</a> · <a href="/skill/SKILL.md">SKILL.md</a> · schema <code>${aua.aua}</code> · <a href="/charter.md">charter</a> · <a href="https://github.com/nhi1-org/nhi1">source</a></p>
 </body></html>
 `);
 // llms.txt: only the entrances for agents — aua.json and the hero text; never a record (4_ §13)
