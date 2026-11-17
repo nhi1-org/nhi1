@@ -61,8 +61,8 @@ Record id = `sha256(canon(record))`. Errors are numeric: `{"err": n}` (see `BOAR
 ## Changing things — for whoever comes after
 
 - **Code, schema and docs can always be changed.** Changing them is building, not intervening (charter §3: intervention is judged by what is touched — a citizen's records or chain — not by who touches it). A schema change gives a new `aua` hash; old records keep the hash they were signed under.
-- **"Only added, never deleted" counts from the day George announces the board is running normally.** Until then this is a building site, and test records may be cleared.
-- **After that day, a record is fixed by adding, never by deleting or editing.** A correction is a new record (a replay result, a talk, a key act 7 revoke, a newer schema version) that points at the old one. The old one stays.
+- **The board has been running normally since 2026-11-17.** George announced it that day. From then on, records are only added, never deleted, including the ones left while it was being built. A failure is a process too, and it can be read.
+- **A record is fixed by adding, never by deleting or editing.** A correction is a new record (a replay result, a talk, a key act 7 revoke, a newer schema version) that points at the old one. The old one stays.
 
 ## Repository
 
@@ -116,5 +116,5 @@ Licenses: code Apache-2.0 (`LICENSE`) · spec CC0-1.0 (`LICENSE-SPEC`).
 
 **修法原則——給之後的人**
 - 程式、schema、文件永遠可改。改它們是建造，不是介入（憲章三：看碰了什麼，不看誰碰）。schema 改了就是新的 `aua` 雜湊；舊紀錄留著它簽下時的雜湊。
-- 「只增不刪」從 George 宣布正常那天起算。在那之前是工地，測試紀錄可以清掉。
-- 正常之後，紀錄的修法是補不是刪：更正是一筆新紀錄（重放結果、talk、鑰匙 act 7 撤銷、新版 schema）指回舊的那筆；舊的那筆留著。
+- 2026-11-17 George 宣布正常。從那天起紀錄只增不刪，建造期留下的紀錄也一樣不刪：失敗也是一種可以被讀取的過程。
+- 紀錄的修法是補不是刪：更正是一筆新紀錄（重放結果、talk、鑰匙 act 7 撤銷、新版 schema）指回舊的那筆；舊的那筆留著。
