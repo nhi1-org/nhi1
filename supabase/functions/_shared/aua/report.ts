@@ -136,6 +136,7 @@ function reachLine(n: N): string | null {
   if (n.unreachable_cont > 0) parts.push(`持續連不上 ${fmt(n.unreachable_cont)} 個介面（最長已 ${fmt(n.unreachable_days)} 天，不再亮燈）`);
   if (n.gone_new > 0) parts.push(`判為不見 ${fmt(n.gone_new)} 個（連續 ${fmt(n.gone_days ?? 7)} 天連不上；只提這一次，紀錄照留）`);
   if (n.back_new > 0) parts.push(`判為不見後又連上 ${fmt(n.back_new)} 個`);
+  if (n.reused_new > 0) parts.push(`判為不見後有新的 use 紀錄、重新可用 ${fmt(n.reused_new)} 個（回到抽查）`);
   return parts.length ? `11. 介面狀況：${parts.join("；")}。` : null;
 }
 

@@ -19,7 +19,7 @@ export async function makeDb() {
     alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
   `);
   // migrations 2 and 5 (pg_cron / pg_net / vault / storage) are Supabase-only; 1, 3, 4 are the board itself
-  for (const m of ["20261109000001_aua_core.sql", "20261109000003_aua_key_model.sql", "20261110000004_aua_closed_ask.sql", "20261110000006_aua_wind.sql", "20261110000008_aua_canary_clear.sql", "20261110000009_aua_schema_batch.sql", "20261110000011_aua_chain.sql", "20261112000012_aua_talk.sql", "20261113000013_aua_wall_quota.sql", "20261113000014_aua_rerun.sql", "20261113000015_aua_digest.sql", "20261123000023_aua_board_fix.sql"]) {
+  for (const m of ["20261109000001_aua_core.sql", "20261109000003_aua_key_model.sql", "20261110000004_aua_closed_ask.sql", "20261110000006_aua_wind.sql", "20261110000008_aua_canary_clear.sql", "20261110000009_aua_schema_batch.sql", "20261110000011_aua_chain.sql", "20261112000012_aua_talk.sql", "20261113000013_aua_wall_quota.sql", "20261113000014_aua_rerun.sql", "20261113000015_aua_digest.sql", "20261123000023_aua_board_fix.sql", "20261123000025_aua_thing_reused.sql"]) {
     await db.exec(readFileSync(join(ROOT, "supabase/migrations", m), "utf8"));
   }
   return db;

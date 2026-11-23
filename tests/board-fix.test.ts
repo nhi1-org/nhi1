@@ -11,7 +11,8 @@ import type { ModelFn } from "../supabase/functions/_shared/aua/model.ts";
 import { errSummary, lightOf, runDaily, runReportJob, templateSentence } from "../supabase/functions/_shared/aua/report.ts";
 import { runWind } from "../supabase/functions/_shared/aua/wind.ts";
 import { generateKey, signRecord } from "../skill/nhi1-aua/aua.mjs";
-import { AUA, deps, makeDb, rpcFor } from "./helpers.ts";
+import { AUA, deps, envelope, makeDb, prevOf, putUse, rpcFor, today } from "./helpers.ts";
+import { hashOf, ident } from "../supabase/functions/_shared/aua/canon.ts";
 import { applyMem } from "./mem-helpers.ts";
 
 type Db = Awaited<ReturnType<typeof makeDb>>;
@@ -293,5 +294,51 @@ describe("5 the rpf price", () => {
     const notices: string[] = [];
     await db.query("update public.knob set val = 1 where name = 'replay_on'", [], { onNotice: (n: { message?: string }) => notices.push(String(n.message)) } as never);
     assert.ok(notices.some((m) => /replay_on = 1 while rpf_price_in \/ rpf_price_out are 0/.test(m)), "warned");
+  });
+});
+
+describe("3b a thing judged gone that gets a new use is usable again (Opus 11/23 follow-up)", () => {
+  const t = { name: "search", description: "Search.", inputSchema: { type: "object", properties: { q: { type: "string" } } } };
+  async function use(db: Db, addr: string) {
+    const k = await generateKey();
+    const rec = await signRecord({
+      aua: AUA, thing: { addr, iface: await hashOf(t) }, call: { op: await ident(t.name), in: H("2"), out: H("3") }, task: H("7"),
+      result: { code: 0, err: 0 }, cost: { tin: 1, tout: 1, ms: 1, money: 0, cur: "" }, effect: 0,
+      by: { key: k.pub, model: await ident("claude-opus-5-5"), rt: await ident("claude-code") }, t: today(), prev: prevOf(k.pub), stub: null,
+    }, k);
+    const r = await putUse(await envelope(rec, k), deps(db));
+    assert.ok([200, 201].includes(r.status), JSON.stringify(r.body));
+  }
+
+  it("a new use adds one 「重新可用」 row (state 2); the thing is back in the checks, said once; old rows untouched", async () => {
+    const db = await makeDb();
+    const rpc = rpcFor(db);
+    const addr = "https://mcp.again.org/mcp";
+    await use(db, addr);
+    const id = (await rows(db, "select id from public.thing"))[0].id;
+    const now = Date.now();
+    for (let i = 7; i >= 1; i--) await db.query("insert into public.wind_check (thing_id, result, at) values ($1, 3, $2)", [id, new Date(now - i * 86400e3).toISOString()]);
+    assert.equal(await rpc("aua_wind_gone", {}), 1, "7 days: judged gone");
+    await use(db, addr);
+    assert.deepEqual((await rows(db, "select state from public.thing_state order by id")).map((r) => r.state), [1, 2]);
+    await use(db, addr);
+    assert.equal((await rows(db, "select count(*)::int n from public.thing_state"))[0].n, 2, "no longer gone: a further use adds nothing");
+    assert.equal(await rpc("aua_wind_gone", {}), 0, "the 7-day count starts again after the state row: not judged gone again that night");
+    await db.query("insert into public.wind_check (thing_id, result, at) values ($1, 3, now() + interval '1 second')", [id]);
+    const d = new Date();
+    const r = await runDaily(rdeps(db, () => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + 1, 0, 5))));
+    assert.equal(r.nums.checked, 1, "back in the checks");
+    assert.equal(r.nums.unreachable_new, 1, "unreachable after being used again is a new state: yellow once");
+    assert.equal(r.light, 1);
+    assert.match(r.text, /判為不見後有新的 use 紀錄、重新可用 1 個（回到抽查）/);
+    assert.equal((await rows(db, "select count(*)::int n from public.wind_check where result = 3"))[0].n, 8, "checks only added");
+    await assert.rejects(db.query("update public.thing_state set state = 1 where state = 2"), /append-only/);
+  });
+
+  it("a use for a thing that is not judged gone adds no state row", async () => {
+    const db = await makeDb();
+    await use(db, "https://mcp.fine.org/mcp");
+    await use(db, "https://mcp.fine.org/mcp");
+    assert.equal((await rows(db, "select count(*)::int n from public.thing_state"))[0].n, 0);
   });
 });
