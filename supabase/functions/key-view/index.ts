@@ -2,4 +2,4 @@
 import { handleKeyView } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleKeyView, 4096);
+serve("key-view", handleKeyView, 4096);

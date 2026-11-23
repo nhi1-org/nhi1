@@ -3,7 +3,9 @@ import { hashOf, sha256Hex, toHex } from "./canon.ts";
 import type { Deps, Res, Rpc } from "./handlers.ts";
 import { HOLDERS } from "./holders.ts";
 import { rpcBody } from "./rpc-body.ts";
-import { BOARD_ERR as E, SCHEMA } from "./schema.ts";
+import { SCHEMA } from "./schema.ts";
+import { type DoorFn, edgeWait, withDoor } from "./door.ts";
+import { handleHttp } from "./http.ts";
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (r: Request) => Promise<Response>): void };
 
@@ -37,14 +39,6 @@ export async function storeGet(path: string): Promise<Uint8Array | null> {
   return new Uint8Array(await r.arrayBuffer());
 }
 
-const CORS = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "POST, OPTIONS",
-  "access-control-allow-headers": "content-type",
-};
-const json = (status: number, body: unknown) =>
-  new Response(JSON.stringify(body), { status, headers: { ...CORS, "content-type": "application/json" } });
-
 function clientIp(req: Request): string {
   const xf = req.headers.get("x-forwarded-for");
   return (xf ? xf.split(",")[0] : req.headers.get("cf-connecting-ip") ?? "0").trim();
@@ -54,33 +48,20 @@ function randomHex(n: number) {
   return toHex(crypto.getRandomValues(new Uint8Array(n)));
 }
 
-export function serve(handler: (body: unknown, d: Deps) => Promise<Res>, maxBody = 4096) {
-  Deno.serve(async (req) => {
-    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-    if (req.method !== "POST") return json(405, { err: E.method });
-    try {
-      const raw = new Uint8Array(await req.arrayBuffer());
-      if (raw.length > maxBody) return json(413, { err: E.too_large });
-      let body: unknown;
-      try {
-        body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(raw));
-      } catch {
-        return json(400, { err: E.bad_json });
-      }
-      const deps: Deps = {
-        rpc,
-        now: () => Math.floor(Date.now() / 1000),
-        ip: await sha256Hex((await SALT) + clientIp(req)),
-        aua: await AUA,
-        holders: HOLDERS,
-        randomHex,
-        store: { get: storeGet },
-      };
-      const r = await handler(body, deps);
-      return json(r.status, r.body);
-    } catch (e) {
-      console.error(String(e)); // server log only; never in the response
-      return json(500, { err: E.internal });
-    }
-  });
+/** the deps of one request: the IP only as a salted hash, for the rate gate (never stored as such, never counted) */
+async function depsOf(req: Request): Promise<Deps> {
+  return {
+    rpc,
+    now: () => Math.floor(Date.now() / 1000),
+    ip: await sha256Hex((await SALT) + clientIp(req)),
+    aua: await AUA,
+    holders: HOLDERS,
+    randomHex,
+    store: { get: storeGet },
+  };
+}
+
+/** an agent-facing endpoint: counted at the door (door.ts), then the request core (http.ts), then the handler */
+export function serve(fn: DoorFn, handler: (body: unknown, d: Deps) => Promise<Res>, maxBody = 4096) {
+  Deno.serve(withDoor(fn, rpc, (req, mark) => handleHttp(req, fn, handler, maxBody, depsOf, mark), edgeWait()));
 }

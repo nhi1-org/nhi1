@@ -3,4 +3,4 @@
 import { handleWall } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleWall, 1024);
+serve("wall", handleWall, 1024);

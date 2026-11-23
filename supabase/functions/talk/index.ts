@@ -3,4 +3,4 @@
 import { handleTalk } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleTalk, 4096);
+serve("talk", handleTalk, 4096);

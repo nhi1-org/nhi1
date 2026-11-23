@@ -3,4 +3,4 @@
 import { handleKey } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleKey, 4096);
+serve("key", handleKey, 4096);

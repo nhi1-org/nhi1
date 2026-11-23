@@ -3,4 +3,4 @@
 import { handleReplica } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleReplica, 1024);
+serve("replica", handleReplica, 1024);

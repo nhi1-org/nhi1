@@ -291,7 +291,10 @@ describe("1.4 daily report", () => {
     assert.deepEqual(m.text.match(HEX64), [r.id], "the only 64-hex string is the report id");
     assert.doesNotMatch(m.text, /https?:|mcp\.one\.org/, "no link, no addr");
     assert.equal(r.wrote, false, "no model → the fixed sentence");
-    assert.match(m.text, /2\. 一句話：今天有 1 件小問題，AI 已經自己處理/);
+    // BOARD-FIX-1123, 3: nothing was handled, so it does not say the AI handled it; it names the situation
+    assert.match(m.text, /1\. 今天的燈號：黃（有狀況，不用人處理）/);
+    assert.match(m.text, /2\. 一句話：今天有狀況，不用人處理：1 個工具介面第一次連不上。/);
+    assert.doesNotMatch(m.text, /AI 已經?自己處理/);
     const log = (await rows(db, "select kind, sent, send_err from public.report_log"))[0];
     assert.deepEqual([log.kind, log.sent, log.send_err], [0, true, 0]);
 

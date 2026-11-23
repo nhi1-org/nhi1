@@ -3,4 +3,4 @@
 import { handleWork } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleWork, 2048);
+serve("work", handleWork, 2048);

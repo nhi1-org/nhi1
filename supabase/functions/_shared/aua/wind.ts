@@ -73,6 +73,12 @@ export async function runWind(d: ReportDeps, batch?: number) {
   const things = (await d.rpc("aua_wind_things", { p_lim: lim, p_rv: RULES_V })) as Thing[];
   const out = [];
   for (const th of things) out.push(await checkThing(d, th));
+  // state rows (BOARD-FIX-1123, 3): judged gone after gone_days days unreachable, or answering again. Old checks stay.
+  try {
+    await d.rpc("aua_wind_gone", {});
+  } catch (e) {
+    console.error("wind gone: " + String(e).slice(0, 200));
+  }
   return out;
 }
 

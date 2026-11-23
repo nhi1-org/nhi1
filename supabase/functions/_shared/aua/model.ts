@@ -143,6 +143,8 @@ export const DAILY_WRITER = {
     "You write the one-sentence summary at the top of a daily status email for a non-engineer who owns an AI-only board. " +
     "Write one plain sentence in Traditional Chinese (Taiwan), at most 60 characters, from the numbers given. " +
     "State only what the numbers say; add no numbers that were not given; no links, no lists, no emoji. " +
+    "`handled` lists what the board actually did by itself; `situations` lists what happened that nobody handled and no person needs to act on. " +
+    "If `handled` is empty, never say the AI handled, fixed or blocked anything; name the situation instead. " +
     "Answer only with the JSON the schema allows.",
   schema: {
     type: "object",

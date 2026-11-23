@@ -3,4 +3,4 @@
 import { handleMem } from "../_shared/aua/mem.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleMem, 96 * 1024);
+serve("mem", handleMem, 96 * 1024);

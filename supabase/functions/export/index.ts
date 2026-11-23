@@ -5,6 +5,7 @@ import { canon, hashOf, sha256Hex } from "../_shared/aua/canon.ts";
 import { buildExport } from "../_shared/aua/handlers.ts";
 import { SCHEMA } from "../_shared/aua/schema.ts";
 import { rpc, storePut } from "../_shared/aua/serve.ts";
+import { edgeWait, withDoor } from "../_shared/aua/door.ts";
 
 declare const Deno: { serve(h: (r: Request) => Promise<Response>): void };
 
@@ -13,12 +14,14 @@ async function gzip(text: string): Promise<Uint8Array> {
   return new Uint8Array(await new Response(s).arrayBuffer());
 }
 
-Deno.serve(async (req) => {
+// counted at the door (door.ts); "inside" only once the vault secret is proven
+Deno.serve(withDoor("export", rpc, async (req, mark) => {
   if (req.method !== "POST") return new Response(null, { status: 405 });
   const secret = req.headers.get("x-aua-export") ?? "";
   if (!/^[0-9a-f]{64}$/.test(secret) || !(await rpc("aua_export_auth", { p_secret: secret }))) {
     return new Response(JSON.stringify({ err: 17 }), { status: 401 });
   }
+  mark.inside = true;
   try {
     const { text, counts } = await buildExport(rpc);
     const gz = await gzip(text);
@@ -37,4 +40,4 @@ Deno.serve(async (req) => {
     console.error(String(e));
     return new Response(JSON.stringify({ err: 16 }), { status: 500 });
   }
-});
+}, edgeWait()));

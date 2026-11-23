@@ -2,4 +2,4 @@
 import { handleReplay } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleReplay, 2048);
+serve("replay", handleReplay, 2048);

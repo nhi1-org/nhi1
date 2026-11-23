@@ -2,4 +2,4 @@
 import { handleUse } from "../_shared/aua/handlers.ts";
 import { serve } from "../_shared/aua/serve.ts";
 
-serve(handleUse, 4096);
+serve("use", handleUse, 4096);
